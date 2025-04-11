@@ -2,13 +2,13 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/signup", async (req, res) => {
-  res.send("Signup Page");
-});
+router.post("/signup", signup);
 
-router.get("/login", async (req, res) => {
-  res.send("Login Page");
-});
+router.post("/login", login);
+
+router.post("/logout", logout);
+
+router.put("/update-Profile", updateProfile);
 
 
 
