@@ -6,35 +6,13 @@ export const signup = async (req, res) => {
   const { role } = req.body;
   try {
     if (role === "mentor") {
-      const {
-        fullName,
-        email,
-        password,
-        passingYear,
-        currentCompany,
-        college,
-      } = req.body;
-      if (
-        !fullName ||
-        !email ||
-        !password ||
-        !passingYear ||
-        !currentCompany ||
-        !college
-      ) {
+      const {fullName, email, password, passingYear, currentCompany, college} = req.body;
+      if (!fullName || !email || !password || !passingYear || !currentCompany || !college) {
         return res.status(400).json({ message: "All fields are required" });
       }
     } else {
-      const { fullName, email, password, graduationYear, college, rollNo } =
-        req.body;
-      if (
-        !fullName ||
-        !email ||
-        !password ||
-        !graduationYear ||
-        !rollNo ||
-        !college
-      ) {
+      const { fullName, email, password, graduationYear, college, rollNo } = req.body;
+      if (!fullName || !email || !password || !graduationYear || !rollNo || !college) {
         return res.status(400).json({ message: "All fields are required" });
       }
     }
@@ -63,18 +41,21 @@ export const signup = async (req, res) => {
         passingYear,
         currentCompany,
         college,
-        role:'mentor',
+        role: "mentor",
       });
     } else {
-        newUser = new User({
+      newUser = new User({
         fullName,
         email,
         password: hashedPassword,
         graduationYear,
         rollNo,
         college,
-        role: 'student',
+        role: "student",
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error in signup controller:", error.message);
+    return res.status(500).json({message: "Internal Server Error"})
+  }
 };
