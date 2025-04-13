@@ -17,7 +17,8 @@ const userSchema = new mongoose.Schema({
     },
     role:{
         type:String,
-        enum:['student', 'mentor', 'admin']
+        enum:['student', 'mentor', 'admin'],
+        required: true,
     },
 
     //General Fields
@@ -32,7 +33,7 @@ const userSchema = new mongoose.Schema({
 
     //Student Specific field
     rollNo:{
-        Type:Number,
+        type: Number,
         required:true,
     },
     graduationYear:{
