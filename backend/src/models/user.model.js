@@ -1,58 +1,66 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    email:{
-        type:String,
-        required: true,
-        unique:true,
-    },
-    fullName:{
-        type:String,
-        required: true,
-    },
-    password:{
-        type:String,
-        required: true,
-        minLength:8,
-    },
-    role:{
-        type:String,
-        enum:['student', 'mentor', 'admin'],
-        required: true,
-    },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  fullName: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    minLength: 8,
+  },
+  role: {
+    type: String,
+    enum: ['student', 'mentor', 'admin'],
+    required: true,
+  },
 
-    //General Fields
-    profilePic:{
-        type:String,
-        required: true,
-    },
-    college:{
-        type:String,
-        required: true,
-    },
+  // General Fields
+  profilePic: {
+    type: String,
+    required: false,
+    default: "",   // no need to upload at signup
+  },
+  college: {
+    type: String,
+    required: true,
+  },
 
-    //Student Specific field
-    rollNo:{
-        type: Number,
-        required:true,
+  // Student Specific Fields
+  rollNo: {
+    type: String,
+    required: function () {
+      return this.role === "student";
     },
-    graduationYear:{
-        type:Number,
-        required: true,
+  },
+  graduationYear: {
+    type: Number,
+    required: function () {
+      return this.role === "student";
     },
+  },
 
-    //Mentor Specific Field
-    passingYear:{
-        type:Number,
-        required: true,
+  // Mentor Specific Fields
+  passingYear: {
+    type: Number,
+    required: function () {
+      return this.role === "mentor";
     },
-    
-    currentCompany:{
-        type:String,
-        required: true,
-    }
-}, {timestamps:true})
+  },
+  currentCompany: {
+    type: String,
+    required: function () {
+      return this.role === "mentor";
+    },
+  },
+}, { timestamps: true });
 
-const User= new mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

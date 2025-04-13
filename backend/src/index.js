@@ -20,5 +20,5 @@ connectDB().then(() => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }).catch((error) => {
-  console.error("❌ Failed to connect to database", error);
+  console.error("Failed to connect to database", error);
 });

@@ -3,97 +3,98 @@ import bcrypt from "bcryptjs";
 import {generateToken} from "../lib/util.js"
 
 export const signup = async (req, res) => {
-  // 1. Destructure everything 
   const { role, fullName, email, password, passingYear, currentCompany, college, graduationYear, rollNo } = req.body;
 
   try {
-    // 2. Validate required fields
-    if (role === "mentor") {
-      if (!fullName || !email || !password || !passingYear || !currentCompany || !college) {
-        return res.status(400).json({ message: "All fields are required" });
-      }
-    } else {
-      if (!fullName || !email || !password || !graduationYear || !rollNo || !college) {
-        return res.status(400).json({ message: "All fields are required" });
-      }
+    // 1. Validate role
+    if (!role || !["mentor", "student"].includes(role)) {
+      return res.status(400).json({ message: "Invalid role" });
     }
 
-    // 3. Validate password length
+    // 2. Validate common fields
+    if (!fullName || !email || !password || !college) {
+      return res.status(400).json({ message: "All common fields are required" });
+    }
+
+    // 3. Validate role-specific fields
+    if (role === "mentor" && (!passingYear || !currentCompany)) {
+      return res.status(400).json({ message: "Mentor specific fields are required" });
+    }
+
+    if (role === "student" && (!graduationYear || !rollNo)) {
+      return res.status(400).json({ message: "Student specific fields are required" });
+    }
+
+    // 4. Password length check
     if (password.length < 8) {
       return res.status(400).json({ message: "Password must be at least 8 characters" });
     }
 
-    // 4. Check if user already exists
+    // 5. Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists. Please login." });
+      return res.status(400).json({ message: "User already exists. Proceed to login." });
     }
 
-    // 5. Hash the password
+    //6. Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 6. Create user
-    const newUser = role === "mentor" ? new User({
+    // 7. Create user object dynamically
+    const newUserData = {
       fullName,
       email,
       password: hashedPassword,
-      passingYear,
-      currentCompany,
+      role,
       college,
-      role: "mentor",
-    }) : new User({
-      fullName,
-      email,
-      password: hashedPassword,
-      graduationYear,
-      rollNo,
-      college,
-      role: "student",
-    });
+    };
 
-    // 7. Save user and generate token
-    await newUser.save();
+    if (role === "mentor") {
+      newUserData.passingYear = passingYear;
+      newUserData.currentCompany = currentCompany;
+    } else if (role === "student") {
+      newUserData.graduationYear = graduationYear;
+      newUserData.rollNo = rollNo;
+    }
+
+    const newUser = await User.create(newUserData);
+
+    // 8. Generate token
     const token = generateToken(newUser._id, res);
 
-    // 8. Send response
-    const userData = {
+    // 9. Send response
+    res.status(201).json({
       _id: newUser._id,
       fullName: newUser.fullName,
       email: newUser.email,
       role: newUser.role,
       college: newUser.college,
       profilePic: newUser.profilePic,
+      ...(role === "mentor" && { passingYear: newUser.passingYear, currentCompany: newUser.currentCompany }),
+      ...(role === "student" && { graduationYear: newUser.graduationYear, rollNo: newUser.rollNo }),
       token,
-    };
-
-    if (role === "mentor") {
-      userData.passingYear = newUser.passingYear;
-      userData.currentCompany = newUser.currentCompany;
-    } else {
-      userData.graduationYear = newUser.graduationYear;
-      userData.rollNo = newUser.rollNo;
-    }
-
-    return res.status(201).json(userData);
+    });
 
   } catch (error) {
-    console.log("Error in signup controller:", error.message);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("Error in signup controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 
+
 export const login = async(req, res) => {
-  const {email, password, role} = req.body;
+  const {email, password} = req.body;
   try {
     const user = await User.findOne({email});
-    if(!user) return res.status(400).json({message: "Invalid Credentials"});
+    if(!user) return res.status(400).json({ message: "Incorrect email or password." });
+
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if(!isPasswordCorrect)
-      return res.status(400).json({message: "Invalid Credentials"});
+      return res.status(400).json({ message: "Incorrect email or password." });
 
+ 
     generateToken(user._id, res);
 
     //I am using repetitive way for mentor and student. Another way is that I can use a commonUserData for the common fields and then for the uncommon fields for student and mentor I can use the if-else
