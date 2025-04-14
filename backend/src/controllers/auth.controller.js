@@ -81,8 +81,6 @@ export const signup = async (req, res) => {
   }
 };
 
-
-
 export const login = async(req, res) => {
   const {email, password} = req.body;
   try {
@@ -138,3 +136,4 @@ export const logout = async (req, res) => {
     return res.status(500).json({message:"Internal Server Error"});
   }
 }
+
