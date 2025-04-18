@@ -145,3 +145,12 @@ export const checkAuth = (req, res) => {
     return res.status(500).json({message:"Internal Server Error"});    
   }
 }
+
+export const studentDashboard = (req, res) => {
+  res.json({message:"Welcome student"});
+}
+
+export const mentorDashboard = (req, res) => {
+  res.json({message:"Welcome mentor"});
+}
+

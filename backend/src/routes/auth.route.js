@@ -1,5 +1,5 @@
 import express from "express";
-import {signup, login, logout, checkAuth} from "../controllers/auth.controller.js"
+import {signup, login, logout, checkAuth, studentDashboard, mentorDashboard} from "../controllers/auth.controller.js"
 import { protectRoute } from "../middlewares/auth.middleware.js";
 import { authoriseRoles } from "../middlewares/authRole.middleware.js";
 
@@ -16,11 +16,7 @@ router.post("/logout", logout);
 
 router.get("/check", protectRoute, checkAuth);
 
-router.get("/mentor/dashboard", protectRoute, authoriseRoles("mentor"), (req,res) => {
-    res.json({message:"Welcome mentor"})
-});
+router.get("/mentor/dashboard", protectRoute, authoriseRoles("mentor"), studentDashboard);
 
-router.get("/student/dashboard", protectRoute, authoriseRoles("student"), (req, res) => {
-    res.json({message:"Welcome student"})
-});
+router.get("/student/dashboard", protectRoute, authoriseRoles("student"), mentorDashboard);
 export default router;
