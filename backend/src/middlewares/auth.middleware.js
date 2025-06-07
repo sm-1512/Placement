@@ -20,6 +20,11 @@ export const protectRoute = async (req, res, next) => {
             return res.status(401).json({message:"User not found"});
         }
         req.user = user;
+
+        console.log("Decoded JWT:", decoded);
+        console.log("Authenticated user:", user);
+
+
         next();
 
     } catch (error) {

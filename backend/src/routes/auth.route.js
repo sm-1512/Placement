@@ -16,7 +16,8 @@ router.post("/logout", logout);
 
 router.get("/check", protectRoute, checkAuth);
 
-router.get("/mentor/dashboard", protectRoute, authoriseRoles("mentor"), studentDashboard);
+router.get("/mentor/dashboard", protectRoute, authoriseRoles("mentor"), mentorDashboard);
+router.get("/student/dashboard", protectRoute, authoriseRoles("student"),  studentDashboard);
 
-router.get("/student/dashboard", protectRoute, authoriseRoles("student"), mentorDashboard);
+
 export default router;

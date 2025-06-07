@@ -137,6 +137,7 @@ export const logout = async (req, res) => {
   }
 }
 
+//This route is being created in case when user refreshes then whether to take him to login page or profile page.
 export const checkAuth = (req, res) => {
   try {
     return res.status(200).json(req.user); //Send the user back to the client
@@ -153,4 +154,3 @@ export const studentDashboard = (req, res) => {
 export const mentorDashboard = (req, res) => {
   res.json({message:"Welcome mentor"});
 }
-
