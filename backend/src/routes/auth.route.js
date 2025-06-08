@@ -1,7 +1,8 @@
 import express from "express";
-import {signup, login, logout, checkAuth, studentDashboard, mentorDashboard} from "../controllers/auth.controller.js"
+import {signup, login, logout, checkAuth, studentDashboard, mentorDashboard, updateProfile} from "../controllers/auth.controller.js"
 import { protectRoute } from "../middlewares/auth.middleware.js";
 import { authoriseRoles } from "../middlewares/authRole.middleware.js";
+import {upload} from "../middlewares/uploadImage.middleware.js"
 
 
 const router = express.Router();
@@ -12,7 +13,7 @@ router.post("/login", login);
 
 router.post("/logout", logout);
 
-//router.put("/update-Profile", updateProfile);
+router.put("/update-Profile", protectRoute, upload.single("profilePic"), updateProfile);
 
 router.get("/check", protectRoute, checkAuth);
 
