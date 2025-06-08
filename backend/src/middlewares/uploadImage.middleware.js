@@ -1,7 +1,7 @@
 import multer from "multer";
 
 //Using memory storage (in RAM, suitable for cloudinary uploads)
-const storage = multer.storage();
+const storage = multer.memoryStorage();
 
 // Earlier method of just handling file upload could be problematic. user can upload pdf, exe file, there has to be a check.
 const fileFilter = (req, res, cb) => {
