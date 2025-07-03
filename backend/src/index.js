@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 dotenv.config();
 
@@ -16,9 +17,16 @@ app.use(express.json());
 //Middleware to parse cookies
 app.use(cookieParser());
 
+// Middleware for CORS
+app.use(cors({
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  credentials: true, 
+}));
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
+
 
 // Connect to database first, then start server
 connectDB().then(() => {
