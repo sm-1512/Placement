@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Mail, Eye, EyeOff, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -106,16 +107,17 @@ const LoginPage = () => {
               Log In
             </button>
           </form>
-
-          <p className="text-sm text-center mt-6 text-gray-600 dark:text-gray-400">
-            Don&apos;t have an account?{" "}
-            <a
-              href="/signup"
-              className="underline hover:text-black dark:hover:text-white"
-            >
-              Sign Up
-            </a>
-          </p>
+          <div className="text-center">
+            <p className="text-base-content/60 py-4">
+              Don&apos;t have an account?{" "}
+              <Link
+                to="/signup"
+                className="text-blue-500 hover:underline"
+              >
+                Sign Up
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </main>

@@ -24,11 +24,11 @@ export const signup = async (req, res) => {
     }
 
     // 2. Validate common fields
-    if (!fullName || !email || !password || !college) {
+    /* if (!fullName || !email || !password || !college) {
       return res
         .status(400)
         .json({ message: "All common fields are required" });
-    }
+    } */
 
     // 3. Validate role-specific fields
     if (role === "mentor" && (!passingYear || !currentCompany)) {
